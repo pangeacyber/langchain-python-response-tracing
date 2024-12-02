@@ -62,8 +62,12 @@ class PangeaAuditCallbackHandler(BaseTracer):
         self._client.log_bulk(
             [
                 {
-                    "event_type": "inference:response",
-                    "event_tools": run.name,
+                    "event_trace_id": run.trace_id,
+                    "event_type": "llm/end",
+                    "event_tools": {
+                        "invocation_params": run.extra.get("invocation_params", {}),
+                        "llm_output": run.outputs.get("llm_output", {}),
+                    },
                     "event_output": x,
                 }
                 for x in text_generations
